@@ -9,6 +9,11 @@ objPosDoubleHashing::objPosDoubleHashing()
     myHashTable = new objPos[TABLE_SIZE];
 }
 
+objPosDoubleHashing::objPosDoubleHashing(int size)
+{
+    myHashTable = new objPos[size];
+}
+
 objPosDoubleHashing::~objPosDoubleHashing()
 {
     delete[] myHashTable;
