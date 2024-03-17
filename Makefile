@@ -6,7 +6,7 @@ OBJ = objPos.o objPosQuadHashing.o objPosDoubleHashing.o Test.o
 %.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-Lab4: $(OBJ)
+Lab5: $(OBJ)
 	$(CC) -o $@ ${OBJ} $(CFLAGS)
 
 test:	testLab5
