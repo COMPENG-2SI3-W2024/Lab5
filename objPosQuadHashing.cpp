@@ -5,45 +5,60 @@ using namespace std;
 
 objPosQuadHashing::objPosQuadHashing()
 {
+<<<<<<< HEAD
     myHashTable = new objPos[TABLE_SIZE];
     tableSize = TABLE_SIZE;
+=======
+    // Instantiate the objPos Hash Table of the default size TABLE_SIZE defined in the objPosHashTable abstract class
+    // Should also initialize tableSize field with the default size TABLE_SIZE
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }
 
 objPosQuadHashing::objPosQuadHashing(int size)
 {
+<<<<<<< HEAD
     myHashTable = new objPos[size];
     tableSize = size;
+=======
+    // Instantiate the objPos Hash Table of the specified size
+    // Should also initialize tableSize field with specified size
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }
 
 objPosQuadHashing::~objPosQuadHashing()
 {
-    delete[] myHashTable;
+    // delete the Hash Table
 }
 
 int objPosQuadHashing::calculateHashing(int prefix, int number) const  // hashing function
 {    
-    int sum = 0;
+    // Implementing the primary hashing function
 
-    while(prefix != 0)
-    {
-        sum += (prefix % 10);
-        prefix /= 10;
-    }
+    // Add all the decimal integer digits of the Prefix ASCII char and the Number together
 
-    while(number != 0)
-    {
-        sum += (number % 10);
-        number /= 10;
-    }
+    // For example, given objPos.prefix = 'A' (65) and objPos.number = 98, then...
+    //  h(x) = sum of all decimal digits of prefix and number = 6 + 5 + 9 + 8 = 28
 
-    return sum;
+    // return the sum as the hashing key.    
+    
 }
 
 bool objPosQuadHashing::insert(const objPos &thisPos)
 {
-    int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
-    int originalIndex = hashIndex;
+    // Algorithm similar to the one discussed in class
+    //  1. Calculate the initial hashing key using calculateHashing() private helper function (i.e. the h1(x))
+    //  2. Check symbol field to see whether the indexed slot is empty
+    //      If yes, insert data, set symbol to 'v', then return true (indicating successful insertion)
+    //      Otherwise, proceed to collision resolution
+    //  3. Collision resolution strategy - Quadratic Hashing
+    //      h(x) = (h1(x) + i^2) mod tableSize  (i is the probing count)
+    //  4. For every newly calculated key using quadratic probing, check for empty slot for insertion
+    //      If empty slot is found, insert data, set symbol to 'v', then return true (indicating successful insertion)
+    //      If element is already inserted, return false (indicating failed insertion)
+    //      If probing count exceeds MAX_PROBING_COUNT defined in objPosHash.h, return false
+    //          (too many probing attempts, may lead to integer overflow)
 
+<<<<<<< HEAD
     // If hashing index location is empty, insert
     if(myHashTable[hashIndex].getSym() == 0)
     {
@@ -74,14 +89,28 @@ bool objPosQuadHashing::insert(const objPos &thisPos)
         //cout << "failed to insert!" << endl;
         return false;
     }
+=======
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 
 }
 
 bool objPosQuadHashing::remove(const objPos &thisPos)  // lazy delete 
 {
-    int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
-    int originalIndex = hashIndex;    
+    // Algorithm similar to the one discussed in class
+    //  1. Calculate the initial hashing key using calculateHashing() private helper function (i.e. the h1(x))
+    //  2. Check if the data at the slot matches thisPos (prefix and number)
+    //      If yes, perform lazy delete by setting symbol to 0, then return true (indicating successful removal)
+    //      Otherwise, proceed to collision resolution
+    //  3. Collision resolution strategy - Quadratic Hashing
+    //      h(x) = (h1(x) + i^2) mod tableSize  (i is the probing count)
+    //  4. For every newly calculated key using quadratic probing, check for data matching (identical prefix and number)
+    //      If match found, perform lazy delete by setting symbol to 0, then return true (indicating successful removal)
+    //      If empty slot encountered, the probing chain reaches the end, hence return false (indicating failed removal)
+    //      If probing count exceeds MAX_PROBING_COUNT defined in objPosHash.h, return false
+    //          (too many probing attempts, may lead to integer overflow)
+    
 
+<<<<<<< HEAD
     for(int i = 1; myHashTable[hashIndex].getSym() != 0; i++)
     {
         if(myHashTable[hashIndex].getPF() == thisPos.getPF() &&
@@ -98,13 +127,30 @@ bool objPosQuadHashing::remove(const objPos &thisPos)  // lazy delete
     }
 
     return false;  // only reaches here if matches not found
+=======
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }
 
 bool objPosQuadHashing::isInTable(const objPos &thisPos) const
 {
-    int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
-    int originalIndex = hashIndex;
+    // Algorithm similar to the one discussed in class
+    //  1. Calculate the initial hashing key using calculateHashing() private helper function (i.e. the h1(x))
+    //  2. Check if the data at the slot matches thisPos (prefix and number) 
+    //      If matched, further chech whether symbol != 0 (data not deleted yet)
+    //          If yes, return true (indicating successfully found)
+    //          Otherwise, return false (indicating failed to find)
+    //     If no match is found, proceed to collision resolution
+    //  3. Collision resolution strategy - Quadratic Hashing
+    //      h(x) = (h1(x) + i^2) mod tableSize  (i is the probing count)
+    //  4. For every newly calculated key using quadratic probing, check for data matching (identical prefix and number)
+     //      If matched, further chech whether symbol != 0 (data not deleted yet)
+    //          If yes, return true (indicating successfully found)
+    //          Otherwise, return false (indicating failed to find)
+    //      If probing count exceeds MAX_PROBING_COUNT defined in objPosHash.h, return false
+    //          (too many probing attempts, may lead to integer overflow)
     
+    
+<<<<<<< HEAD
     //cout << "calculated index: " << hashIndex << endl;
 
     for(int i = 1; myHashTable[hashIndex].getSym() != 0; i++)
@@ -124,10 +170,13 @@ bool objPosQuadHashing::isInTable(const objPos &thisPos) const
     }
 
     return false;  // only reaches here if matches not found
+=======
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }
 
 double objPosQuadHashing::getLambda() const
 {
+<<<<<<< HEAD
     int count = 0;
 
     for(int i = 0; i < tableSize; i++)
@@ -137,12 +186,42 @@ double objPosQuadHashing::getLambda() const
     }
 
     return (double)count / tableSize;
+=======
+    // Calculate the Load Factor of the Hash Table
+    // Check lecture code for examples
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }
 
 void objPosQuadHashing::printMe() const
 {
+<<<<<<< HEAD
     for(int i = 0; i < tableSize; i++)
     {
         cout << "[" << i << "]  " << myHashTable[i].getPF() << myHashTable[i].getNum() << " " << myHashTable[i].getSym() << endl;     
     }
+=======
+    // Recommended Format:
+    //  [Key] Prefix Number  Symbol
+
+    // e.g. ...
+    //      [20] A 9  v
+    //      [21] 0 
+    //      [22] E 7  v
+    //      ... 
+ 
+
+
+    // Provided Code for Model Code Integration
+    ////////////////////////////////////////////////
+
+    // MacUILib_printf("[ ");
+    // for(int i = 0; i < TABLE_SIZE; i++)
+    // {
+    //     if(myHashTable[i].getSym() != 0)
+    //         MacUILib_printf("%c%d ", myHashTable[i].getPF(), myHashTable[i].getNum());     
+    // }
+    // MacUILib_printf("] L=%.2f", getLambda());
+
+    // You will also need to #include "MacUILib.h" when integrating with the model code.
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 }

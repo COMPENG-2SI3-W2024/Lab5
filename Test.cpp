@@ -5,8 +5,13 @@
 #include <cstdlib>
 #include <ctime>
 
+<<<<<<< HEAD
 #define COUNT 37
 #define LARGE_COUNT 111
+=======
+#define COUNT 37				// 36 is a better number, but not prime
+#define LARGE_COUNT 111			// 
+>>>>>>> 7839822f6863a99ce656626b336181744a258eee
 #define TOTAL_ASSERT_COUNT 604
 #define TOTAL_TEST_CASES 12
 #define TOLERANCE_RANGE 0.005   // +/- 0.5%
