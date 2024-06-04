@@ -1,4 +1,5 @@
 #include "objPosQuadHashing.h"
+#include "MacUILib.h"
 
 #include <iostream>
 using namespace std;
@@ -141,8 +142,11 @@ double objPosQuadHashing::getLambda() const
 
 void objPosQuadHashing::printMe() const
 {
-    for(int i = 0; i < tableSize; i++)
+    MacUILib_printf("[ ");
+    for(int i = 0; i < TABLE_SIZE; i++)
     {
-        cout << "[" << i << "]  " << myHashTable[i].getPF() << myHashTable[i].getNum() << " " << myHashTable[i].getSym() << endl;     
+        if(myHashTable[i].getSym() != 0)
+            MacUILib_printf("%c%d ", myHashTable[i].getPF(), myHashTable[i].getNum());     
     }
+    MacUILib_printf("] L=%.2f", getLambda());
 }

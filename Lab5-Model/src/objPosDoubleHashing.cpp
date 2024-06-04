@@ -1,26 +1,27 @@
-#include "objPosQuadHashing.h"
+#include "objPosDoubleHashing.h"
+#include "MacUILib.h"
 
 #include <iostream>
 using namespace std;
 
-objPosQuadHashing::objPosQuadHashing()
+objPosDoubleHashing::objPosDoubleHashing()
 {
     myHashTable = new objPos[TABLE_SIZE];
     tableSize = TABLE_SIZE;
 }
 
-objPosQuadHashing::objPosQuadHashing(int size)
+objPosDoubleHashing::objPosDoubleHashing(int size)
 {
     myHashTable = new objPos[size];
     tableSize = size;
 }
 
-objPosQuadHashing::~objPosQuadHashing()
+objPosDoubleHashing::~objPosDoubleHashing()
 {
     delete[] myHashTable;
 }
 
-int objPosQuadHashing::calculateHashing(int prefix, int number) const  // hashing function
+int objPosDoubleHashing::calculateHashing(int prefix, int number) const  // hashing function
 {    
     int sum = 0;
 
@@ -39,7 +40,21 @@ int objPosQuadHashing::calculateHashing(int prefix, int number) const  // hashin
     return sum;
 }
 
-bool objPosQuadHashing::insert(const objPos &thisPos)
+// 5 - sum of all digits of the first hashing index mod 5.
+int objPosDoubleHashing::calculateSecondaryHashing(int input) const
+{
+    int sum = 0;
+
+    while(input != 0)
+    {
+        sum += (input % 10);
+        input /= 10;
+    }
+
+    return 5 - (sum % 5);
+}
+
+bool objPosDoubleHashing::insert(const objPos &thisPos)
 {
     int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
     int originalIndex = hashIndex;
@@ -57,7 +72,7 @@ bool objPosQuadHashing::insert(const objPos &thisPos)
     int i;
     for(i = 1; myHashTable[hashIndex].getSym() != 0; i++)
     {
-        hashIndex = (originalIndex + i * i) % tableSize;
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;
         if(hashIndex == originalIndex || i > MAX_PROBING_COUNT) 
             break;
     }    
@@ -77,7 +92,7 @@ bool objPosQuadHashing::insert(const objPos &thisPos)
 
 }
 
-bool objPosQuadHashing::remove(const objPos &thisPos)  // lazy delete 
+bool objPosDoubleHashing::remove(const objPos &thisPos)  // lazy delete 
 {
     int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
     int originalIndex = hashIndex;    
@@ -93,18 +108,18 @@ bool objPosQuadHashing::remove(const objPos &thisPos)  // lazy delete
             return true;
         }
 
-        hashIndex = (originalIndex + i * i) % tableSize;        
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;        
         if(hashIndex == originalIndex) break;
     }
 
     return false;  // only reaches here if matches not found
 }
 
-bool objPosQuadHashing::isInTable(const objPos &thisPos) const
+bool objPosDoubleHashing::isInTable(const objPos &thisPos) const
 {
     int hashIndex = calculateHashing(thisPos.getPF(), thisPos.getNum());
     int originalIndex = hashIndex;
-    
+   
     //cout << "calculated index: " << hashIndex << endl;
 
     for(int i = 1; myHashTable[hashIndex].getSym() != 0; i++)
@@ -119,14 +134,14 @@ bool objPosQuadHashing::isInTable(const objPos &thisPos) const
             return (myHashTable[hashIndex].getSym() != 0);
         }
 
-        hashIndex = (originalIndex + i * i) % tableSize;        
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;        
         if(hashIndex == originalIndex) break;
     }
 
     return false;  // only reaches here if matches not found
 }
 
-double objPosQuadHashing::getLambda() const
+double objPosDoubleHashing::getLambda() const
 {
     int count = 0;
 
@@ -139,10 +154,13 @@ double objPosQuadHashing::getLambda() const
     return (double)count / tableSize;
 }
 
-void objPosQuadHashing::printMe() const
+void objPosDoubleHashing::printMe() const
 {
-    for(int i = 0; i < tableSize; i++)
+    MacUILib_printf("[ ");
+    for(int i = 0; i < TABLE_SIZE; i++)
     {
-        cout << "[" << i << "]  " << myHashTable[i].getPF() << myHashTable[i].getNum() << " " << myHashTable[i].getSym() << endl;     
+        if(myHashTable[i].getSym() != 0)
+            MacUILib_printf("%c%d ", myHashTable[i].getPF(), myHashTable[i].getNum());     
     }
+    MacUILib_printf("] L=%.2f", getLambda());
 }

@@ -24,11 +24,16 @@
 
 #include "objPos.h"
 
+#define TABLE_SIZE 49
+#define MAX_PROBING_COUNT 1000  // arbitrary to avoid integer overflow
+
 class objPos;  // forward declaration
 
-class objPosHashTable
+class objPosHashTable  // this is NOT an interface but an abstract class!!
 {
     public:
+        int tableSize;
+
         virtual ~objPosHashTable(){};
 
         virtual bool insert(const objPos &thisPos) = 0;

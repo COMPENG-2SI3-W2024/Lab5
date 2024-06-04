@@ -6,8 +6,6 @@
 
 class objPos;
 
-#define TABLE_SIZE 49;
-
 class objPosDoubleHashing : public objPosHashTable
 {
     private:

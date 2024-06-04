@@ -1,5 +1,5 @@
 #include "objPosDoubleHashing.h"
-#include "MacUILib.h"
+//#include "MacUILib.h"
 
 #include <iostream>
 using namespace std;
@@ -7,11 +7,13 @@ using namespace std;
 objPosDoubleHashing::objPosDoubleHashing()
 {
     myHashTable = new objPos[TABLE_SIZE];
+    tableSize = TABLE_SIZE;
 }
 
 objPosDoubleHashing::objPosDoubleHashing(int size)
 {
     myHashTable = new objPos[size];
+    tableSize = size;
 }
 
 objPosDoubleHashing::~objPosDoubleHashing()
@@ -67,14 +69,16 @@ bool objPosDoubleHashing::insert(const objPos &thisPos)
 
     // Otherwise, start probing until another empty position is found
     // OR the last hashing index is at the original index (for foolproofing)
-    for(int i = 1; myHashTable[hashIndex].getSym() != 0; i++)
+    int i;
+    for(i = 1; myHashTable[hashIndex].getSym() != 0; i++)
     {
-        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % TABLE_SIZE;
-        if(hashIndex == originalIndex) break;
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;
+        if(hashIndex == originalIndex || i > MAX_PROBING_COUNT) 
+            break;
     }    
 
     // Then check if insertion is possible
-    if(hashIndex != originalIndex)
+    if(hashIndex != originalIndex && i <= MAX_PROBING_COUNT)
     {
         myHashTable[hashIndex] = thisPos;   
         myHashTable[hashIndex].setSym('v'); // representing taken     
@@ -104,7 +108,7 @@ bool objPosDoubleHashing::remove(const objPos &thisPos)  // lazy delete
             return true;
         }
 
-        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % TABLE_SIZE;        
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;        
         if(hashIndex == originalIndex) break;
     }
 
@@ -127,10 +131,10 @@ bool objPosDoubleHashing::isInTable(const objPos &thisPos) const
         if(myHashTable[hashIndex].getPF() == thisPos.getPF() &&
            myHashTable[hashIndex].getNum() == thisPos.getNum())
         {   
-            return true;
+            return (myHashTable[hashIndex].getSym() != 0);
         }
 
-        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % TABLE_SIZE;        
+        hashIndex = (originalIndex + i * calculateSecondaryHashing(originalIndex)) % tableSize;        
         if(hashIndex == originalIndex) break;
     }
 
@@ -141,18 +145,18 @@ double objPosDoubleHashing::getLambda() const
 {
     int count = 0;
 
-    for(int i = 0; i < TABLE_SIZE; i++)
+    for(int i = 0; i < tableSize; i++)
     {
         if(myHashTable[i].getSym() != 0)    
             count++;
     }
 
-    return (double)count / TABLE_SIZE;
+    return (double)count / tableSize;
 }
 
 void objPosDoubleHashing::printMe() const
 {
-    for(int i = 0; i < TABLE_SIZE; i++)
+    for(int i = 0; i < tableSize; i++)
     {
         cout << "[" << i << "]  " << myHashTable[i].getPF() << myHashTable[i].getNum() << " " << myHashTable[i].getSym() << endl;     
     }

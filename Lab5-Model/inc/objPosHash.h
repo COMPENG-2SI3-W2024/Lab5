@@ -26,10 +26,16 @@
 
 class objPos;  // forward declaration
 
-#define TABLE_SIZE 20  // always 50 elements (why?)
+
+#define TABLE_SIZE 37
+#define MAX_PROBING_COUNT 1000  // arbitrary to avoid integer overflow
+
 
 class objPosHashTable
 {
+    protected:
+        int tableSize;
+
     public:
         virtual ~objPosHashTable(){};
 
